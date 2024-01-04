@@ -3,6 +3,7 @@
 
 import tkinter as tk
 import tkinter.messagebox as messagebox
+from tkinter import ttk
 from tkinter import scrolledtext
 
 class UADescriptionEditor:
@@ -21,8 +22,10 @@ class UADescriptionEditor:
         
         self._root.geometry(f"{WIDTH}x{HEIGHT}")
         self._root.title("UA Description Editor v2.8.21")
+        ibm_mainframe = tk.Frame(root)
+        ibm_mainframe.pack(fill=tk.BOTH, expand=tk.TRUE)
         # Create a canvas widget
-        canvas = tk.Canvas(root)
+        canvas = tk.Canvas(ibm_mainframe)
         canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=tk.TRUE)
         self._canvas = canvas
         # Add a scrollbar to the canvas
