@@ -1,5 +1,5 @@
 # Created on 20 / 06 / 2023
-# Arvin Dev
+# Arvin Dev 
 
 import tkinter as tk
 import tkinter.messagebox as messagebox
@@ -23,32 +23,31 @@ class UADescriptionEditor:
         #self._root.state('zoomed') # Full-screen :3
         HEIGHT = "510"
         WIDTH = "770"
+        root.maxsize(WIDTH, HEIGHT)
         self._root.geometry(f"{WIDTH}x{HEIGHT}")
         self._root.title("UA Description Editor v2.8.21")
-        ibm_mainframe = tk.Canvas(root)
-        
+        ibm_mainframe = tk.Frame(root)
         ibm_mainframe.pack_propagate(False)
-        # Create a canvas widget
-        canvas = tk.Canvas(ibm_mainframe)
         
-        self._canvas = canvas
+        # Create a canvas widget
+        self._canvas = tk.Canvas(ibm_mainframe)
+        
         # Add a scrollbar to the canvas
-        scrollbar = ttk.Scrollbar(canvas, orient=tk.VERTICAL, command=canvas.yview)
-        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        scrollbar = ttk.Scrollbar(self._canvas, orient=tk.VERTICAL, command=self._canvas.yview)
+
         self._scrollbar = scrollbar
         
         # Configure the canvas to use the scrollbar
-        canvas.config(yscrollcommand=scrollbar.set)
+        self._canvas.config(yscrollcommand=scrollbar.set)
         
         # Create a frame inside the canvas to hold the content -- Frame [2]
-        frame = tk.Frame(canvas)
-        
+        frame = tk.Frame(self._canvas)
         
         self._frame = frame
         # Product Name Entry
         product_name_label = ttk.Label(frame, text="Enter Product Name: ")
         product_name_label.pack(side=tk.TOP)
-        self._product_name_entry = ttk.Entry(frame, font=("TkDefaultFont", 12))
+        self._product_name_entry = tk.Entry(frame, font=("TkDefaultFont", 12))
         self._product_name_entry.pack(side=tk.TOP, fill=tk.X)
         
         # Subheading Entry
@@ -57,22 +56,23 @@ class UADescriptionEditor:
         self._subheading_entry = tk.Entry(frame, font=("TkDefaultFont", 12))
         self._subheading_entry.pack(side=tk.TOP, fill=tk.X)
         
-        # Description ScrolledText Entry
-        description_label = ttk.Label(frame, text="Enter Description: ")
+        # Description Label/ScrolledText
+        description_label = ttk.Label(ibm_mainframe, text="Enter Description: ")
         description_label.pack(side=tk.TOP)
         self._description_text = scrolledtext.ScrolledText(frame, height=7, font=("TkDefaultFont", 12))
-        self._description_text.pack(side=tk.TOP, fill=tk.BOTH, expand=tk.TRUE)
+        self._description_text.pack(side=tk.TOP, fill=tk.BOTH, expand=tk.FALSE)
         description_text = ttk.Sizegrip(self._description_text) 
         description_text.pack(side="bottom", anchor="se") 
         
-        # Main features Entry
-        features_label = ttk.Label(frame, text="Enter Features: ")
+        # Main features Label/ScrolledText
+        features_label = ttk.Label(ibm_mainframe, text="Enter Features: ")
         features_label.pack(side=tk.TOP)
         self._features_text = scrolledtext.ScrolledText(frame, height=7, font=("TkDefaultFont", 12))
         self._features_text.pack(side=tk.TOP, fill=tk.BOTH, expand=tk.TRUE)
         features_text_drag  = ttk.Sizegrip(self._features_text)
         features_text_drag.pack(side="bottom", anchor="se")
 
+        # Binds the tab to go to the next widget instead of indenting.
         self._features_text.bind("<Tab>", lambda event: self.next_widget(event))
         self._description_text.bind("<Tab>", lambda event: self.next_widget(event))
 
@@ -105,17 +105,21 @@ class UADescriptionEditor:
         self._embedded_label = False
         
         # Add the frame to the canvas
-        canvas.create_window((0, 0), window=frame, anchor=tk.NW)
+        self._canvas.create_window((0, 0), window=frame, anchor=tk.NW)
         
         
         # Configure the canvas to resize with the window
-        canvas.bind('<Configure>', lambda e: canvas.configure(scrollregion=canvas.bbox('all')))
-        canvas.bind_all("<MouseWheel>", lambda e: canvas.yview_scroll(int(-1*(e.delta/120)), "units"))
+        self._canvas.bind('<Configure>', lambda e: self._canvas.configure(scrollregion=self._canvas.bbox('all')))
+        self._canvas.bind_all("<MouseWheel>", lambda e: self._canvas.yview_scroll(int(-1*(e.delta/120)), "units"))
+
+        frame.pack_propagate(False)
         frame.pack(expand=tk.TRUE, fill=tk.BOTH, side=tk.TOP)
-        frame.pack_propagate(False)
         ibm_mainframe.pack(fill=tk.BOTH, expand=tk.TRUE)
-        frame.pack_propagate(False)
-        canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=tk.TRUE, anchor=tk.NW)
+        self._canvas.pack_propagate(False)
+        self._canvas.pack(side='left', fill=tk.BOTH, expand=tk.TRUE)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        #self._canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=tk.TRUE, anchor=tk.NW)
+
         self._sub_feats = []
         self._embeds = []
     def next_widget(self, event):
@@ -220,7 +224,7 @@ class UADescriptionEditor:
         sub_feat_title = tk.Entry(self._frame, font=("TkDefaultFont", 12))
         sub_feat_title.pack(side=tk.TOP, fill=tk.BOTH, expand=tk.TRUE, pady=5)
         sub_feat_text = scrolledtext.ScrolledText(self._frame, font=("TkDefaultFont", 12), height=5)
-        sub_feat_text.pack(side=tk.TOP, expand=tk.TRUE)
+        sub_feat_text.pack(side=tk.TOP, expand=tk.TRUE, fill=tk.X)
         sub_feat_text.bind("<Tab>", lambda event: self.next_widget(event))
         
         self._sub_feats.append((sub_feat_title, sub_feat_text)) # Add to list to be used later
@@ -232,7 +236,7 @@ class UADescriptionEditor:
         
         # TextBox for HTML code to go into.
         embeddedTextbox = scrolledtext.ScrolledText(self._frame, font=("TkDefaultFont", 12), height=5)
-        embeddedTextbox.pack(side=tk.BOTTOM, expand=tk.TRUE)
+        embeddedTextbox.pack(side=tk.BOTTOM, expand=tk.TRUE, fill=tk.X)
         embeddedTextbox.bind("<Tab>", lambda event: self.next_widget(event))
         
         if (self._embedded_label is not False):
