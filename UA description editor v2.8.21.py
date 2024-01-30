@@ -1,5 +1,5 @@
 # 20 / 06 / 2023
-# Arvin Dev Polayil
+# Arvin Dev
 
 import tkinter as tk
 import tkinter.messagebox as messagebox
@@ -8,6 +8,8 @@ from tkinter import scrolledtext
 class UADescriptionEditor:
     """Class representing the Main Window
     """
+    FONT_SIZE = 12
+
     def __init__(self, root):
         """Initialiser method for the Main window
 
@@ -22,89 +24,143 @@ class UADescriptionEditor:
         self._root.geometry(f"{WIDTH}x{HEIGHT}")
         self._root.title("UA Description Editor v2.8.21")
         # Create a canvas widget
-        canvas = tk.Canvas(root)
-        canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=tk.TRUE)
-        self._canvas = canvas
+        self._canvas = tk.Canvas(root)
+        self._canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=tk.TRUE)
+
         # Add a scrollbar to the canvas
-        scrollbar = tk.Scrollbar(root, orient=tk.VERTICAL, command=canvas.yview)
+        scrollbar = tk.Scrollbar(root, orient=tk.VERTICAL, command=self._canvas.yview)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-        self._scrollbar = scrollbar
         # Configure the canvas to use the scrollbar
-        canvas.config(yscrollcommand=scrollbar.set)
+        self._canvas.config(yscrollcommand=scrollbar.set)
         
         # Create a frame inside the canvas to hold the content
-        frame = tk.Frame(canvas)
-        frame.pack(expand=tk.TRUE, fill=tk.BOTH)
-        self._frame = frame
+        self._frame = tk.Frame(self._canvas)
+        self._frame.pack(expand=tk.TRUE, fill=tk.BOTH)
         
-        # Product Name Entry
-        product_name_label = tk.Label(frame, text="Enter Product Name: ")
-        product_name_label.pack(side="top")
-        self._product_name_entry = tk.Entry(frame, font=("TkDefaultFont", 12))
-        self._product_name_entry.pack(side="top", fill="both", expand=True)
+        # Product Name Label & Entry
+        product_name_label = tk.Label(self._frame, text="Enter Product Name: ")
+        product_name_label.pack(side=tk.TOP)
+        self._product_name_entry = tk.Entry(
+            self._frame,
+            font=("TkDefaultFont", self.FONT_SIZE)
+        )
+        self._product_name_entry.pack(side=tk.TOP, fill=tk.BOTH, expand=tk.TRUE)
         
-        # Subheading Entry
-        subheading_label = tk.Label(frame, text="Enter Sub Headling: ")
-        subheading_label.pack(side="top")
-        self._subheading_entry = tk.Entry(frame, font=("TkDefaultFont", 12))
-        self._subheading_entry.pack(side="top", fill="both", expand=True)
+        # Subheading Label & Entry
+        subheading_label = tk.Label(self._frame, text="Enter Sub Headling: ")
+        subheading_label.pack(side=tk.TOP)
+        self._subheading_entry = tk.Entry(
+            self._frame,
+            font=("TkDefaultFont", self.FONT_SIZE)
+        )
+        self._subheading_entry.pack(side=tk.TOP, fill=tk.BOTH, expand=tk.TRUE)
         
-        # Description ScrolledText Entry
-        description_label = tk.Label(frame, text="Enter Description: ")
+        # Description Label & ScrolledText
+        description_label = tk.Label(self._frame, text="Enter Description: ")
         description_label.pack(side=tk.TOP)
-        self._description_text = scrolledtext.ScrolledText(frame, height=7, font=("TkDefaultFont", 12))
+        self._description_text = scrolledtext.ScrolledText(
+            self._frame,
+            height=7,
+            font=("TkDefaultFont", self.FONT_SIZE)
+        )
         self._description_text.pack(side=tk.TOP, fill=tk.BOTH, expand=tk.TRUE)
         
-        # Main features Entry
-        features_label = tk.Label(frame, text="Enter Features: ")
+        # Main features Label & ScrolledText
+        features_label = tk.Label(self._frame, text="Enter Features: ")
         features_label.pack(side=tk.TOP)
-        self._features_text = scrolledtext.ScrolledText(frame, height=7, font=("TkDefaultFont", 12))
+        self._features_text = scrolledtext.ScrolledText(
+            self._frame, 
+            height=7, 
+            font=("TkDefaultFont", self.FONT_SIZE)
+        )
         self._features_text.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
         
-        self._features_text.bind("<Tab>", lambda event: self.next_widget(event))
+        self._features_text.bind("<Tab>",lambda event: self.next_widget(event))
         self._description_text.bind("<Tab>", lambda event: self.next_widget(event))
 
-        button_frame = tk.Frame(frame)
+        button_frame = tk.Frame(self._frame)
         button_frame.pack(side=tk.BOTTOM, expand=tk.TRUE, fill=tk.X)
         clear_reset_frame = tk.Frame(button_frame)
         clear_reset_frame.pack(side=tk.BOTTOM,fill=tk.X)
         
         # Clear all but without subfeatures button
-        reset_button = tk.Button(clear_reset_frame, text="Reset", command=self.clear_to_default, relief=tk.RAISED, borderwidth=2, bg="pink")
+        reset_button = tk.Button(
+            clear_reset_frame,
+            text="Reset",
+            command=self.clear_to_default,
+            relief=tk.RAISED,
+            borderwidth=2,
+            bg="pink"
+        )
         reset_button.pack(side=tk.RIGHT, fill=tk.X, expand=tk.TRUE)
         
         # Clear all entries button
-        clear_button = tk.Button(clear_reset_frame, text="Clear All", command=self.clear_all, relief=tk.RAISED, borderwidth=2, bg="pink")
+        clear_button = tk.Button(
+            clear_reset_frame,
+            text="Clear All",
+            command=self.clear_all,
+            relief=tk.RAISED,
+            borderwidth=2,
+            bg="pink"
+        )
         clear_button.pack(side=tk.RIGHT, fill=tk.X, expand=tk.TRUE)
         
         # Convert to HTML button
-        enter_button = tk.Button(button_frame, text="Create HTML", command=self.text_to_html, relief=tk.RAISED, borderwidth=2, bg="light green", height=2)
+        enter_button = tk.Button(
+            button_frame,
+            text="Create HTML",
+            command=self.text_to_html,
+            relief=tk.RAISED,
+            borderwidth=2,
+            bg="light green",
+            height=2
+        )
         enter_button.pack(side=tk.BOTTOM, fill=tk.X)
         
         # Add embedded Button
-        self._add_embedded = tk.Button(button_frame, text="Add Embedded", command=self.add_embedded, relief=tk.RAISED, borderwidth=2, bg="light blue")
-        self._add_embedded.pack(side=tk.BOTTOM, fill=tk.X)
+        self._add_embedded = tk.Button(
+            button_frame, 
+            text="Add Embedded",
+            command=self.add_embedded, 
+            relief=tk.RAISED,
+            borderwidth=2,
+            bg="light blue"
+        )
+        self._add_embedded.pack(side=tk.BOTTOM,fill=tk.X)
         
         # Add sub-feature Button
-        add_sub = tk.Button(button_frame, text="Add Sub Feature", command=self.add_sub_feat, relief=tk.RAISED, borderwidth=2, bg="#CBC3E3")
+        add_sub = tk.Button(
+            button_frame,
+            text="Add Sub Feature",
+            command=self.add_sub_feat,
+            relief=tk.RAISED,
+            borderwidth=2,
+            bg="#CBC3E3"
+        )
         add_sub.pack(side=tk.BOTTOM, fill=tk.X)
         
-        self._sub_feat_label = False # Sentinel values
+        self._sub_feat_label = False # Sentinel values - thanks 2002 <3
         self._embedded_label = False
         
         # Add the frame to the canvas
-        canvas.create_window((0, 0), window=frame, anchor=tk.NW)
-        
+        self._canvas.create_window((0, 0), window=self._frame, anchor=tk.NW)
+
         # Configure the canvas to resize with the window
-        canvas.bind('<Configure>', lambda e: canvas.configure(scrollregion=canvas.bbox('all')))
-        canvas.bind_all("<MouseWheel>", lambda e: canvas.yview_scroll(int(-1*(e.delta/120)), "units"))
+        self._canvas.bind(
+            '<Configure>',
+            lambda e: self._canvas.configure(scrollregion=self._canvas.bbox('all'))
+        )
+        self._canvas.bind_all(
+            "<MouseWheel>",
+            lambda e: self._canvas.yview_scroll(int(-1*(e.delta/120)), "units")
+        )
         #frame.pack_propagate(True)
         
         self._sub_feats = []
         self._embeds = []
     def next_widget(self, event):
-        """Tab functionality so when tab is actually pressed for
-        scrolled texts it will actually go to next box instead of indenting.
+        """Logic for tab functionality so when tab is actually pressed for
+        scrolled texts it will actually go to next box instead of adding an indent.
 
         Args:
             event (event): the event that is being passed
@@ -149,7 +205,7 @@ class UADescriptionEditor:
         return "break"  # Prevent default behavior of the Tab key
     def clear_to_default(self):
         """Reset to the original state of the program.
-        clear_to_default() deletes all the extra subfeatures.
+        Deletes all the extra subfeatures.
         """
         # Will delete all values in the entry boxes
         self._product_name_entry.delete(0, tk.END)
@@ -201,9 +257,21 @@ class UADescriptionEditor:
         
         
         # Enter the Heading and dot-points for the subfeatures
-        sub_feat_title = tk.Entry(self._frame, font=("TkDefaultFont", 12))
-        sub_feat_title.pack(side=tk.TOP, fill=tk.BOTH, expand=tk.TRUE, pady=5)
-        sub_feat_text = scrolledtext.ScrolledText(self._frame, font=("TkDefaultFont", 12), height=5)
+        sub_feat_title = tk.Entry(
+            self._frame,
+            font=("TkDefaultFont", self.FONT_SIZE)
+        )
+        sub_feat_title.pack(
+            side=tk.TOP,
+            fill=tk.BOTH,
+            expand=tk.TRUE,
+            pady=5
+        )
+        sub_feat_text = scrolledtext.ScrolledText(
+            self._frame,
+            font=("TkDefaultFont", 12), 
+            height=5
+            )
         sub_feat_text.pack(side=tk.TOP, expand=tk.TRUE)
         sub_feat_text.bind("<Tab>", lambda event: self.next_widget(event))
         
@@ -211,11 +279,14 @@ class UADescriptionEditor:
         self._canvas.update_idletasks()
         self._canvas.config(scrollregion=self._canvas.bbox("all"))
     def add_embedded(self):
-        """_summary_
+        """Adds a text box for additional embedded data. 
         """
-        
         # TextBox for HTML code to go into.
-        embeddedTextbox = scrolledtext.ScrolledText(self._frame, font=("TkDefaultFont", 12), height=5)
+        embeddedTextbox = scrolledtext.ScrolledText(
+            self._frame,
+            font=("TkDefaultFont", 12),
+            height=5
+        )
         embeddedTextbox.pack(side=tk.BOTTOM, expand=tk.TRUE)
         embeddedTextbox.bind("<Tab>", lambda event: self.next_widget(event))
         
@@ -235,7 +306,7 @@ class UADescriptionEditor:
         # Product Name conversion
         product_name = self._product_name_entry.get()
         product_name = product_name.strip()
-        all_text = ""
+        collated_text = ""
         if product_name != "":  # If there is a product name inputted then add to HTML.
             product_name_html = f"""<h3 style="font-size: 11pt; font-family: helvetica; align-items: left;"><strong>{product_name}</strong></h3>\n"""
         else:
@@ -286,7 +357,7 @@ class UADescriptionEditor:
             features_html = ""
 
         # Collates them into all_text which represents the final version
-        all_text = product_name_html + subheading_html + description_html + features_html  
+        collated_text = product_name_html + subheading_html + description_html + features_html  
         
         if self._sub_feats != []: # Checks if all are empty so that the <\ul> needs to be added or not.
             saved = ""
@@ -296,35 +367,35 @@ class UADescriptionEditor:
                     saved = first.strip()
                 else:
                     pass
-            all_text = all_text.strip()
+            collated_text = collated_text.strip()
             for title, text in self._sub_feats:
                 title = title.get().title().strip()
                 text = text.get("1.0", tk.END)
                 text = text.strip()
                 if title: # Only do this if title is given
-                    all_text += "\n</ul>\n"
-                    all_text = all_text + f"""<h5 style="font-size: 11pt; font-family: helvetica; line-height: 1.6;"><strong>{title}</strong></h5>"""
+                    collated_text += "\n</ul>\n"
+                    collated_text = collated_text + f"""<h5 style="font-size: 11pt; font-family: helvetica; line-height: 1.6;"><strong>{title}</strong></h5>"""
                     if title == saved:
-                        all_text = all_text + "\n" + """<ul style="list-style-type: disc; padding-left: 20; padding-top: 4px; margin-top: -3px; line-height: 1.6; margin-bottom: -4px;">"""
+                        collated_text = collated_text + "\n" + """<ul style="list-style-type: disc; padding-left: 20; padding-top: 4px; margin-top: -3px; line-height: 1.6; margin-bottom: -4px;">"""
                     else:
-                        all_text = all_text + "\n" + """<ul style="list-style-type: disc; padding-left: 20; padding-top: 4px; margin-top: -3px; line-height: 1.6;">"""
+                        collated_text = collated_text + "\n" + """<ul style="list-style-type: disc; padding-left: 20; padding-top: 4px; margin-top: -3px; line-height: 1.6;">"""
                     text = self.convert_descr_to_html(text)
                     if text == "":
-                        all_text = all_text + "\n</ul>\n"
+                        collated_text = collated_text + "\n</ul>\n"
                     else:
-                        all_text = all_text + "\n" + text +"\n</ul>"
+                        collated_text = collated_text + "\n" + text +"\n</ul>"
 
-        all_text = all_text.strip()
-        all_text += "\n"
+        collated_text = collated_text.strip()
+        collated_text += "\n"
 
         for code in self._embeds:
-            all_text += (code.get("1.0", tk.END).strip() + "\n")
-        all_text = all_text.strip()
+            collated_text += (code.get("1.0", tk.END).strip() + "\n")
+        collated_text = collated_text.strip()
 
         response = messagebox.showinfo("Copy Text", "HTML Generated\n\nPress OK to copy text", icon="info", type="okcancel")
         if response == "ok":
             self._root.clipboard_clear()
-            self._root.clipboard_append(all_text)
+            self._root.clipboard_append(collated_text)
         else:
             pass
     def convert_descr_to_html(self, text):
@@ -358,4 +429,3 @@ def main():
 
 if __name__ == '__main__':
     main()
- 
